@@ -8,3 +8,11 @@ main { border-left:1px solid var(--rule);margin-left:3%;max-width:1450px; }
 .strip { border-top:4px solid var(--accent); }
 .worksheet { border-left:0;border-bottom:3px solid var(--accent); }
 @media(max-width:767px){main{margin-left:0;border-left:0}.hero{grid-template-columns:1fr}}
+
+/* Interval research: paired exact bounds and open-interval annotations. */
+.bounds-pair{display:flex;gap:0;border:1px solid var(--ink);max-width:620px;margin:18px 0 26px}
+.bounds-pair div{flex:1;padding:18px 24px}
+.bounds-pair div+div{border-left:1px solid var(--ink)}
+.bounds-pair span{display:block;font-size:12px;letter-spacing:.1em;font-family:'IBM Plex Mono',monospace}
+.bounds-pair b{font-size:30px;font-weight:600;font-variant-numeric:tabular-nums}
+.bounds-pair div:first-child{background:color-mix(in oklch,var(--accent) 9%,var(--paper))}

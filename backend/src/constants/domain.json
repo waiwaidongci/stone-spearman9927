@@ -15,7 +15,7 @@
     [
       "absorption",
       "吸水率 (%)",
-      "number"
+      "interval"
     ]
   ],
   "defaults": {
@@ -26,7 +26,7 @@
     "澄石·灰岩对照",
     "澄石·人造石观察"
   ],
-  "note": "并列值使用平均秩；置换检验假定独立且可交换的试件。相关关系只支持后续假设，不解释为因果。",
+  "note": "并列值使用平均秩；置换检验假定独立且可交换的试件。开区间研究只约束取值互异，上下界不是置信区间；相关关系只支持后续假设，不解释为因果。",
   "accent": "63 0.09 157",
   "dark": "29 0.038 150",
   "bg": "94 0.019 110",
@@ -34,7 +34,7 @@
   "direction": "相关性分析",
   "title": "澄石材料共变研究册",
   "slug": "stone-spearman",
-  "algorithm": "并列平均秩Spearman与固定seed置换p、散点分组解释",
+  "algorithm": "并列平均秩Spearman与固定seed置换p；开区间吸水率按线性扩展求精确ρ上下界",
   "entities": "MaterialBatch / Specimen / CorrelationRun / ResearchNote",
   "scenario": "独立材料试件孔隙率/吸水率→秩相关研究→后续试验假设；相关不解释为因果",
   "visual": "矿样卡、石绿铜色",
@@ -55,5 +55,25 @@
     "running",
     "completed",
     "failed"
-  ]
+  ],
+  "interval_defaults": {
+    "overlap_capacity": 8
+  },
+  "modes": [
+    [
+      "interval",
+      "开区间研究"
+    ],
+    [
+      "exact",
+      "精确值研究"
+    ]
+  ],
+  "interval": {
+    "overlap_capacity": 8,
+    "min_specimens": 2,
+    "deadline_seconds": 30,
+    "capacity_example": "任一点最多八段重叠"
+  },
+  "default_mode": "interval"
 }

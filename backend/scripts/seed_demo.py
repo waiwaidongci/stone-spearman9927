@@ -9,6 +9,9 @@ from src.models.observation import Observation
 from src.models import run,review,audit
 from src.utils.security import hash_password
 
+INTERVAL_HALF_WIDTH = 0.05
+
+
 def seed():
     Base.metadata.create_all(engine)
     rng=np.random.default_rng(42)
@@ -30,8 +33,14 @@ def seed():
                 for n in range(24):
                     b=float(rng.uniform(3,6));rows.append({'before':round(b,3),'after':round(max(.1,b+rng.normal(-.45+k*.3,.5)),3)})
             elif i==3:
+                # Absorption is the one field the upstream lab reports only as an
+                # open interval: each specimen gets a distinct true value that is
+                # strictly inside its reported (low, high) bounds.
                 for n in range(90):
-                    x=round(float(rng.uniform(4,28)),1);rows.append({'porosity':x,'absorption':round(max(0,x*(.18+k*.08)+rng.normal(0,1.5)),2)})
+                    x=round(float(rng.uniform(4,28)),1)
+                    true=round(max(0.0,x*(.18+k*.08)+rng.normal(0,.8)),2)
+                    half=round(float(INTERVAL_HALF_WIDTH*(1+.35*rng.random())),2)
+                    rows.append({'porosity':x,'absorption':{'low':round(max(0.0,true-half),2),'high':round(true+half,2)}})
             else: rows=[{'p0':.08+k*.02,'p1':.1+k*.025,'cost_per_contact':.12+k*.04,'budget':3000+k*500}]
             for n,values in enumerate(rows):
                 key=f'DEMO-{k+1}-{n+1:04}'

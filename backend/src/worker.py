@@ -3,12 +3,15 @@ from pathlib import Path
 from redis import Redis
 from sqlalchemy import select
 from src.config.database import Session
+from src.config.domain import DOMAIN
 from src.models.run import Run
 from src.models import user,study,observation,review,audit
+from src.services import interval_bounds
 from src.services.algorithm import calculate
 from src.utils.serializers import checksum
 redis=Redis.from_url(os.environ['REDIS_URL'])
 Path('/app/artifacts').mkdir(exist_ok=True)
+DEADLINE=float(DOMAIN.get('interval',{}).get('deadline_seconds',30))
 # Recover jobs interrupted after dequeue. A project runs exactly one worker.
 with Session() as db:
     pending=list(db.scalars(select(Run).where(Run.status.in_(['queued','running']))))
@@ -22,9 +25,16 @@ while True:
         run=db.get(Run,id)
         if not run or run.status in ('completed','failed'): continue
         run.status='running';db.commit()
+        started=time.monotonic()
         try:
             if checksum(run.snapshot)!=run.checksum: raise ValueError('输入快照校验失败')
             result=calculate(run.snapshot,run.parameters)
+            if result.get('mode')=='interval':
+                # Both bounds and both reconstructions must be present and
+                # self-consistent before the run may be marked completed.
+                interval_bounds.ensure_complete(result,len(run.snapshot))
+                if time.monotonic()-started>DEADLINE:
+                    raise ValueError(f'区间研究超出 {DEADLINE:g} 秒时限，请拆分批次后重试')
             result['input_sha256']=run.checksum
             run.result=result;run.status='completed'
             Path(f'/app/artifacts/run-{id}.json').write_text(json.dumps(result,ensure_ascii=False,allow_nan=False))
