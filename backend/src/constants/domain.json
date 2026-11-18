@@ -1,0 +1,59 @@
+{
+  "study": "MaterialBatch",
+  "row": "Specimen",
+  "run": "CorrelationRun",
+  "review": "ResearchNote",
+  "study_label": "材料批次",
+  "row_label": "独立试件",
+  "field_label": "秩相关性",
+  "fields": [
+    [
+      "porosity",
+      "孔隙率 (%)",
+      "number"
+    ],
+    [
+      "absorption",
+      "吸水率 (%)",
+      "number"
+    ]
+  ],
+  "defaults": {
+    "resamples": 4999
+  },
+  "names": [
+    "澄石·细砂岩批次",
+    "澄石·灰岩对照",
+    "澄石·人造石观察"
+  ],
+  "note": "并列值使用平均秩；置换检验假定独立且可交换的试件。相关关系只支持后续假设，不解释为因果。",
+  "accent": "63 0.09 157",
+  "dark": "29 0.038 150",
+  "bg": "94 0.019 110",
+  "id": "gb-0039",
+  "direction": "相关性分析",
+  "title": "澄石材料共变研究册",
+  "slug": "stone-spearman",
+  "algorithm": "并列平均秩Spearman与固定seed置换p、散点分组解释",
+  "entities": "MaterialBatch / Specimen / CorrelationRun / ResearchNote",
+  "scenario": "独立材料试件孔隙率/吸水率→秩相关研究→后续试验假设；相关不解释为因果",
+  "visual": "矿样卡、石绿铜色",
+  "oracle": "对scipy spearmanr相关系数；单调/反向/并列/常量边界",
+  "frontend": 18243,
+  "backend": 19243,
+  "db_port": 17743,
+  "database": "MySQL8",
+  "batch": 1,
+  "index": 3,
+  "roles": [
+    "admin",
+    "analyst",
+    "viewer"
+  ],
+  "states": [
+    "queued",
+    "running",
+    "completed",
+    "failed"
+  ]
+}
